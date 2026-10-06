@@ -1,11 +1,27 @@
-import React from 'react'
-import { QrCode, UserPlus, CheckCircle, Ticket } from 'lucide-react'
+'use client'
+
+import React, { useState } from 'react'
+import { QrCode, UserPlus, CheckCircle, Ticket, User, Mail, Phone, Building, ArrowLeft } from 'lucide-react'
 
 export default function Home() {
+  const [view, setView] = useState<'home' | 'register'>('home')
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', institution: '' })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+      setSubmitted(true)
+    }, 1000)
+  }
+
   return (
     <main className="max-w-4xl mx-auto px-4 py-12">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-10">
         <div className="inline-flex items-center justify-center p-3 bg-indigo-600/20 rounded-2xl mb-4 text-indigo-400">
           <Ticket className="w-10 h-10" />
         </div>
@@ -17,38 +33,132 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Grid Fitur Utama */}
-      <div className="grid md:grid-cols-2 gap-6 mb-12">
-        {/* Card Pendaftaran */}
-        <div className="p-6 bg-slate-800/60 border border-slate-700/60 rounded-2xl hover:border-indigo-500/50 transition">
-          <div className="flex items-center gap-3 mb-4 text-indigo-400">
-            <UserPlus className="w-6 h-6" />
-            <h2 className="text-xl font-bold text-white">Form Pendaftaran</h2>
+      {view === 'home' ? (
+        /* Halaman Beranda Utama */
+        <div className="grid md:grid-cols-2 gap-6 mb-12">
+          {/* Card Pendaftaran */}
+          <div className="p-6 bg-slate-800/60 border border-slate-700/60 rounded-2xl hover:border-indigo-500/50 transition flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-4 text-indigo-400">
+                <UserPlus className="w-6 h-6" />
+                <h2 className="text-xl font-bold text-white">Form Pendaftaran</h2>
+              </div>
+              <p className="text-slate-400 text-sm mb-6">
+                Daftarkan peserta event untuk mendapatkan tiket QR Code unik secara otomatis.
+              </p>
+            </div>
+            <button
+              onClick={() => { setView('register'); setSubmitted(false); }}
+              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 font-medium rounded-xl transition text-white"
+            >
+              Buka Form Pendaftaran
+            </button>
           </div>
-          <p className="text-slate-400 text-sm mb-6">
-            Daftarkan peserta event untuk mendapatkan tiket QR Code unik secara otomatis.
-          </p>
-          <button className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 font-medium rounded-xl transition text-white">
-            Buka Form Pendaftaran
-          </button>
-        </div>
 
-        {/* Card Pemindai QR */}
-        <div className="p-6 bg-slate-800/60 border border-slate-700/60 rounded-2xl hover:border-emerald-500/50 transition">
-          <div className="flex items-center gap-3 mb-4 text-emerald-400">
-            <QrCode className="w-6 h-6" />
-            <h2 className="text-xl font-bold text-white">Scanner Absensi</h2>
+          {/* Card Pemindai QR */}
+          <div className="p-6 bg-slate-800/60 border border-slate-700/60 rounded-2xl hover:border-emerald-500/50 transition flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-4 text-emerald-400">
+                <QrCode className="w-6 h-6" />
+                <h2 className="text-xl font-bold text-white">Scanner Absensi</h2>
+              </div>
+              <p className="text-slate-400 text-sm mb-6">
+                Pindai tiket QR milik peserta di lokasi acara untuk mencatat kehadiran instan.
+              </p>
+            </div>
+            <button className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 font-medium rounded-xl transition text-white opacity-80 cursor-not-allowed">
+              Segera Hadir
+            </button>
           </div>
-          <p className="text-slate-400 text-sm mb-6">
-            Pindai tiket QR milik peserta di lokasi acara untuk mencatat kehadiran instan.
-          </p>
-          <button className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 font-medium rounded-xl transition text-white">
-            Buka Pemindai QR
-          </button>
         </div>
-      </div>
+      ) : (
+        /* Formulir Pendaftaran Langsung */
+        <div className="max-w-md mx-auto mb-12">
+          <button
+            onClick={() => setView('home')}
+            className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6 text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
+          </button>
 
-      {/* Status Sistem */}
+          <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl">
+            {!submitted ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <h2 className="text-2xl font-bold text-white mb-2">Form Pendaftaran</h2>
+                
+                <div>
+                  <label className="block text-xs text-slate-300 font-medium mb-1">Nama Lengkap</label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: Budi Santoso"
+                      className="w-full pl-10 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-300 font-medium mb-1">Email</label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="nama@email.com"
+                      className="w-full pl-10 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-300 font-medium mb-1">Nomor WhatsApp</label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="tel"
+                      required
+                      placeholder="08123456789"
+                      className="w-full pl-10 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-indigo-500"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-500 font-medium rounded-xl text-white transition text-sm"
+                >
+                  {loading ? 'Menyimpan...' : 'Daftar Sekarang'}
+                </button>
+              </form>
+            ) : (
+              <div className="text-center py-6">
+                <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+                <h3 className="text-xl font-bold text-white mb-2">Pendaftaran Berhasil!</h3>
+                <p className="text-slate-400 text-sm mb-6">
+                  Terima kasih <span className="text-white font-semibold">{formData.name}</span>. Tiket QR Anda sedang diproses.
+                </p>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="text-xs text-indigo-400 hover:underline"
+                >
+                  Daftar Peserta Lain
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Footer Status */}
       <div className="p-4 bg-slate-800/30 border border-slate-700/40 rounded-xl flex items-center justify-between text-xs text-slate-400">
         <span className="flex items-center gap-2">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
