@@ -96,9 +96,12 @@ export default function Home() {
                 Pindai tiket QR milik peserta di lokasi acara untuk mencatat kehadiran instan.
               </p>
             </div>
-            <button className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 font-medium rounded-xl transition text-white opacity-80 cursor-not-allowed">
-              Segera Hadir
-            </button>
+           <a 
+  href="/scan" 
+  className="w-full inline-block text-center py-3 px-4 bg-emerald-600 hover:bg-emerald-500 font-medium rounded-xl transition text-white"
+>
+  Buka Scanner Absensi
+</a>
           </div>
         </div>
       ) : (
